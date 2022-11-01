@@ -1,0 +1,21 @@
+﻿@model IEnumerable<KappaPortal.Models.Blog>
+
+@*<h2 class="font-weight-light pb-2 text-center">Latest blogs</h2>
+*@<div class="row mb-5">
+    <div class="col text-center">
+        <ul class="list-group list-group-flush d-inline-block">
+            <li class="list-group-item fs-2 px-5 fst-italic active">
+                    Latest blogs
+            </li>
+
+            @foreach (var item in Model)
+            {
+                <li class="list-group-item fs-4 px-5">
+                    <a class="text-decoration-none text-black" asp-controller="Blog" asp-action="Index" asp-route-Id="@item.Id">
+                        @item.Title
+                    </a>
+                </li>
+            }
+        </ul>
+    </div>
+</div>

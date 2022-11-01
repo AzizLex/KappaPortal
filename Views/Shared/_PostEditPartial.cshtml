@@ -1,0 +1,82 @@
+﻿@model KappaPortal.Models.ViewModels.UserPostVM
+
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<div class="card shadow-sm mb-3">
+    <div id="@Model.Id" class="card-body">
+        <h5 class="card-title mb-0">@Model.Title</h5>
+        <p><small>@String.Format("{0:yyyy/MM/dd HH:mm}",Model.TimeStamp)</small></p>
+        <div class="partialcollapse" id="partialcollapse_@Model.Id">
+            <div id="collapse_@Model.Id" class="collapse @ViewBag.Single" aria-labelledby="headingOne" data-bs-parent="#partialcollapse_@Model.Id">
+                <img src="@Html.DisplayFor(model => model.FeaturedImage)" class="img-thumbnail float-start me-3 mb-2" onerror="this.onerror=null; this.src='/img/kappa_img.svg'" width="200">
+                <div class="d-inline-block float-end" @*class="col-sm-2 align-self-center pe-2 d-grid gap-2 justify-content-end"*@>
+                    <a class="btn btn-block btn-primary" style="position:relative; z-index:2; width:90px;" data-bs-toggle="modal" data-bs-target="#editPost_@Model.Id">Edit</a>
+                    <a class="btn bnt-block btn-danger" style="position:relative; z-index:2; width:90px;" data-bs-toggle="modal" data-bs-target="#deletePost_@Model.Id">Delete</a>
+                </div>
+                @Html.Raw(Model.Body)
+                <partial name="_TagLine" model=@Model.Tags />
+            </div>
+        </div>
+
+        <div class="row my-2">
+            <div class="col">
+                <button class="btn disabled">
+                    <img src="~/img/view.svg" />
+                    @Model.Views
+                </button>
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <span class="btn" onclick="likeIt(@Model.Id,'post','like')">
+                        
+                        @if(Model.UserLike?.Like??false)
+                        {
+                            <img id="like_@Model.Id" src="~/img/liked.svg" />
+                        }
+                        else
+                        {
+                            <img id="like_@Model.Id" src="~/img/like.svg" />
+                        }
+                        <span id="likeCount_@Model.Id">@Model.LikeCount</span>
+                    </span>
+
+                    <span class="btn" onclick="likeIt(@Model.Id,'post','dislike')">
+                        @if(Model.UserLike?.Dislike??false)
+                        {
+                            <img id="dislike_@Model.Id" src="~/img/disliked.svg" />
+                        }
+                        else
+                        {
+                            <img id="dislike_@Model.Id" src="~/img/dislike.svg" />
+                        }
+                        <span id="dislikeCount_@Model.Id">@Model.DislikeCount</span>
+                    </span>
+                }
+                else
+                {
+                    <a class="login text-decoration-none" asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Context.Request.Path#like_@Model.Id">
+                        <span class="btn">
+                            <img src="~/img/like.svg" /> @Model.LikeCount
+                        </span>
+
+                        <span class="btn">
+                            <img src="~/img/dislike.svg" /> @Model.DislikeCount
+                        </span>
+                    </a>
+                }
+
+                
+                    <a data-bs-toggle="collapse" href="#comCollapse_@Model.Id" aria-expanded="false" aria-controls="comCollapse_@Model.Id">
+                    <span id="commCount_@Model.Id">@Model.CommentCount</span>  comments
+                    </a>
+               
+                <a class="btn btn-primary float-end more collapsed" data-bs-toggle="collapse" href="#collapse_@Model.Id" aria-expanded="true" aria-controls="collapse_@Model.Id"></a>
+            </div>
+        </div>
+        <div class="collapse" id="comCollapse_@Model.Id">
+            <partial name="_CommentEditPartial" model=@Model />
+        </div>
+    </div>
+</div>
+

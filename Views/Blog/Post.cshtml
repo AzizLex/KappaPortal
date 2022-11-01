@@ -1,0 +1,12 @@
+﻿@model KappaPortal.Models.ViewModels.UserPostVM
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+        <li class="breadcrumb-item text-truncate active" style="max-width: 200px;" aria-current="page" >@Model.Title</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <partial name="_PostPartial" model=@Model />
+</div>

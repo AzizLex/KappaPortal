@@ -1,0 +1,10 @@
+﻿@model IEnumerable<KappaPortal.Models.Tag>
+
+<ul class="tag">
+    @foreach (var tag in Model)
+    {<li>
+        <a  asp-controller="Home" asp-action="TagFilteredPosts" asp-route-Id="@tag.Id" style="text-decoration: none">
+        @tag.Name
+        </a></li>
+    }
+</ul>

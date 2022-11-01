@@ -1,0 +1,29 @@
+﻿@model KappaPortal.Models.ViewModels.UserPostVM
+
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+
+@if (SignInManager.IsSignedIn(User))
+{
+<textarea type="text" class="form-control bg-light overflow-hidden commentArea" style="border-radius: 15px;resize:none;" placeholder="Write a comment..." rows="1"></textarea>
+}
+else
+{
+    <div class="form-control bg-light" style="border-radius: 15px; position: relative;">
+        <a class="login link-secondary text-decoration-none stretched-link"  asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Context.Request.Path#like_@Model.Id">
+            Write a comment...
+        </a>
+    </div>
+}
+
+
+@foreach(Comment item in Model?.Comments){
+    <div id=@item.Id class="bg-light py-1 px-3 my-2" style="border-radius: 15px;">
+        <span class="small fw-bold text-muted">@(item.Author.FirstName+" "+item.Author.LastName+": ")</span>
+        <span class="small text-muted">@String.Format("{0:yyyy/MM/dd HH:mm}",item.TimeStamp)</span>
+        <br/>
+        <span>@item.Body</span>
+    </div>
+}

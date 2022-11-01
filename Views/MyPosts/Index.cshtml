@@ -1,0 +1,174 @@
+﻿@using System.Text.RegularExpressions;
+@model KappaPortal.Models.ViewModels.MyPostIndexVM
+
+@{
+    ViewData["Title"] = "My posts";
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+        <li class="breadcrumb-item"><a asp-controller="MyBlogs" asp-action="Index">My blogs</a></li>
+        <li class="breadcrumb-item active" aria-current="page">@ViewBag.blogTitle</li>
+    </ol>
+</nav>
+
+
+<div class="card my-3 shadow-sm">
+    <div class="card-body">
+        <input type="text" class="form-control bg-light" style="border-radius: 15px;" placeholder="Create new post" aria-label="NewPostTitle" data-bs-toggle="modal" data-bs-target="#createPost">
+    </div>
+</div>
+
+<!-- Modal create new post-->
+<div class="modal fade" id="createPost" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="createPostLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createPostLabel">Create new post</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-action="PostAdd" asp-route-Id="@Model.NewPost.BlogId">
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col">
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                <div class="form-group">
+                                    <input asp-for="NewPost.Title" class="form-control mb-2" placeholder="Add title" />
+                                    <span asp-validation-for="NewPost.Title" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <input asp-for="NewPost.FeaturedImage" class="form-control mb-2" placeholder="Featured image URL" />
+                                    <span asp-validation-for="NewPost.FeaturedImage" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <textarea id="PostBody" asp-for="NewPost.Body" class="form-control" rows="15"></textarea>
+                                    <span asp-validation-for="NewPost.Body" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <input asp-for="TagLine" class="form-control mt-2" placeholder="Tags, separated with comma or space" />
+                                    <span asp-validation-for="TagLine" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer form-group">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" value="PostAdd">Create</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<!-- Post item Card-->
+
+@{
+    if (Model.UserPostList is null)
+    {
+        <div class="card mb-3 shadow-sm">
+            <h4 class="text-center py-5 text-muted">No post yet...</h4>
+        </div>
+    } else
+
+    foreach (var item in Model.UserPostList)
+    {
+        <partial name="_PostEditPartial" model=@item />
+
+        
+        <!-- Modal edit post-->
+        <div class="modal fade" id="editPost_@item.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editPostLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editPostLabel">Edit post</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form asp-action="PostEdit" asp-route-Id="@Model.NewPost.BlogId">
+                        <div class="modal-body">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col">
+                                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                        <input type="hidden" asp-for="NewPost.Id" value=@item.Id />
+
+                                        <div class="form-group">
+                                            <input asp-for="NewPost.Title" class="form-control mb-2" placeholder="Add title" value=@item.Title />
+                                            <span asp-validation-for="NewPost.Title" class="text-danger"></span>
+                                        </div>
+                                        <div class="form-group">
+                                            <input asp-for="NewPost.FeaturedImage" class="form-control mb-2" placeholder="Featured image URL" value=@item.FeaturedImage />
+                                            <span asp-validation-for="NewPost.FeaturedImage" class="text-danger"></span>
+                                        </div>
+                                        <div class="form-group">
+                                            <textarea id="PostBody" name="@Html.NameFor(model => model.NewPost.Body)" class="form-control" rows="15">@item.Body</textarea>
+                                            <span asp-validation-for="NewPost.Body" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <input asp-for="TagLine" class="form-control mt-2" placeholder="Tags, separated with comma or space" value=@item.TagLine />
+                                            <span asp-validation-for="TagLine" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer form-group">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary" value="PostEdit">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal delete post-->
+        <div class="modal fade" id="deletePost_@item.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="deletePostLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deletePostLabel">Delete post</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form asp-action="PostDelete" asp-route-Id="@Model.NewPost.BlogId">
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col">
+                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                    <input type="hidden" asp-for="NewPost.Id" value=@item.Id />
+
+                                    <div class="form-group">
+                                        <label class="control-label">To confirm enter 'yes'</label>
+                                        <input asp-for="NewPost.Title" class="form-control" value="" />
+                                        <span asp-validation-for="NewPost.Title" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer form-group">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary" value="PostDelete">Delete</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    }
+}
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="~/lib/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
+    <script>
+        tinymce.init({
+            selector: '#PostBody'
+        });
+    </script>
+    }

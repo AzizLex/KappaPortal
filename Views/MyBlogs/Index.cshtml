@@ -1,0 +1,185 @@
+﻿@model KappaPortal.Models.ViewModels.MyBlogIndexVM
+
+@{
+    ViewData["Title"] = "My blogs";
+}
+
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">My blogs</li>
+    </ol>
+</nav>
+
+
+
+<div class="card my-3 shadow-sm">
+    <div class="card-body">
+        <input type="text" class="form-control bg-light" style="border-radius: 15px;" placeholder="Start new blog" aria-label="NewBlogTitle" data-bs-toggle="modal" data-bs-target="#createBlog">
+    </div>
+</div>
+
+<!-- Modal create new blog-->
+<div class="modal fade" id="createBlog" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="createBlogLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createBlogLabel">Start new blog</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-action="BlogAdd">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="form-group">
+                                <label asp-for="NewBlog.Title" class="control-label"></label>
+                                <input asp-for="NewBlog.Title" class="form-control" />
+                                <span asp-validation-for="NewBlog.Title" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="NewBlog.Description" class="control-label mt-3"></label>
+                                <textarea asp-for="NewBlog.Description" class="form-control" rows="10"></textarea>
+                                <span asp-validation-for="NewBlog.Description" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="NewBlog.FeaturedImage" class="control-label mt-3"></label>
+                                <input asp-for="NewBlog.FeaturedImage" class="form-control" />
+                                <span asp-validation-for="NewBlog.FeaturedImage" class="text-danger"></span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer form-group">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Create</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<!-- Blog item Card-->
+@{
+    if (!Model.UserBlogList.Any())
+    {
+        <div class="card mb-3 shadow-sm">
+            <h4 class="text-center py-5 text-muted">No blog yet...</h4>
+        </div>
+    }
+
+    foreach (var item in Model.UserBlogList)
+    {
+        <div class="card mb-3 shadow-sm">
+            <div class="row g-0 justify-content-center">
+                <a class="stretched-link" asp-controller="MyPosts" asp-action="Index" asp-route-Id="@item.Id"></a>
+                <div class="col-6 col-sm-2 align-self-center p-md-1">
+                    <div class="ratio ratio-1x1">
+                        <img src="@Html.DisplayFor(modelItem => item.FeaturedImage)" class="img-fluid img-thumbnail" style="object-fit:cover;" onerror="this.onerror=null; this.src='/img/kappa_img.svg'">
+                    </div>
+                </div>
+                <div class="col-sm-8">
+                    <div class="card-body ">
+                        <h4 class="card-title">@Html.DisplayFor(modelItem => item.Title)</h4>
+                        <h6 class="card-subtitle mb-1 text-muted">@Html.DisplayFor(modelItem => item.TimeStamp)</h6>
+                        <p class="text-truncated">@item.Description</p>
+
+                        <p class="card-text">Posts: @Html.DisplayFor(modelItem => item.PostCount) | Views: @Html.DisplayFor(modelItem => item.PostViews)</p>
+                    </div>
+                </div>
+
+                <div class="col-sm-2 align-self-center d-grid pe-2 gap-2 justify-content-end">
+                    <a class="btn btn-primary btn-block" style="position:relative; z-index:2; width:90px;" data-bs-toggle="modal" data-bs-target="#editBlog_@item.Id">Edit</a>
+                    <a class="btn btn-danger bnt-block mb-2" style="position:relative; z-index:2; width:90px;" data-bs-toggle="modal" data-bs-target="#deleteBlog_@item.Id">Delete</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal edit blog-->
+        <div class="modal fade" id="editBlog_@item.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editBlogLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editBlogLabel">Edit blog</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form asp-action="BlogEdit">
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col">
+                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                    <input type="hidden" asp-for="NewBlog.Id" value=@item.Id />
+                                    <div class="form-group">
+                                        <label asp-for="NewBlog.Title" class="control-label"></label>
+                                        <input asp-for="NewBlog.Title" class="form-control" value=@item.Title />
+                                        <span asp-validation-for="NewBlog.Title" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="NewBlog.Description" class="control-label mt-3"></label>
+                                        <textarea name="@Html.NameFor(model => model.NewBlog.Description)" class="form-control" rows="10">@item.Description</textarea>
+                                        <span asp-validation-for="NewBlog.Description" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="NewBlog.FeaturedImage" class="control-label mt-3"></label>
+                                        <input asp-for="NewBlog.FeaturedImage" class="form-control" value=@item.FeaturedImage />
+                                        <span asp-validation-for="NewBlog.FeaturedImage" class="text-danger"></span>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer form-group">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal delete blog-->
+        <div class="modal fade" id="deleteBlog_@item.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="deleteBlogLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteBlogLabel">Delete blog</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form asp-action="BlogDelete">
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col">
+                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                    <input type="hidden" asp-for="NewBlog.Id" value=@item.Id />
+
+                                    <div class="form-group">
+                                        <label class="control-label">To confirm enter blog title @item.Title</label>
+                                        <input asp-for="NewBlog.Title" class="form-control" value="" />
+                                        <span asp-validation-for="NewBlog.Title" class="text-danger"></span>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer form-group">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Delete</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+    }
+}
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }

@@ -1,0 +1,17 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+@await Component.InvokeAsync("LatestPostsCarousel")
+@await Component.InvokeAsync("DoubleCard")
+
+<hr />
+
+@await Component.InvokeAsync("TrendingPosts")
+
+<hr />
+
+@await Component.InvokeAsync("LikedPosts")
+
+<hr />
+
+@await Component.InvokeAsync("LatestBlogs")

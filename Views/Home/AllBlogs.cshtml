@@ -1,0 +1,88 @@
+﻿@model KappaPortal.Models.ViewModels.BlogsAndTagsVM
+
+@{
+    ViewData["Title"] = "All Blogs";
+    string[] tagcolors = { "#00539CFF", "#101820FF", "#F96167", "#CCF381", "#E2D1F9", "#FCF6F5FF", "#FF69B4", "#234E70", "#B85042", "yellow" };
+    string[] tagTextcolors = { "#EEA47FFF", "#FEE715FF", "#FCE77D", "#4831D4", "#317773", "#990011FF", "#00FFFF", "#FBF8BE", "black", "black" };
+    int b = 9;
+    int i = 0;
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">All blogs</li>
+    </ol>
+</nav>
+
+<div class="row align-items-end">
+    <div class="col">
+        <h1>@ViewData["Title"]</h1>
+    </div>
+
+    <div class="col">
+        <a class="btn btn-success float-end mb-2" data-bs-toggle="offcanvas" href="#allTags" role="button" aria-controls="allTags">
+            All tags
+        </a>
+    </div>
+</div>
+
+<div class="offcanvas offcanvas-start" tabindex="-1" id="allTags" aria-labelledby="allTagsLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="allTagsLabel">All tags</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div>
+            All tags ordered by number of posts.
+            <ul class="tag">
+                @foreach (var tag in Model.BrowsePostsByTags)
+                {
+                    int result = i % b;
+                    string tagcolor = tagcolors[result];
+                    string tagTextcolor = tagTextcolors[result];
+                    <li style="background-color:@tagcolor; ">
+                        <a class="p2" asp-controller="Home" asp-action="TagFilteredPosts" asp-route-Id="@tag.Id" style="text-decoration: none; color:@tagTextcolor;">
+                            @tag.Name
+                            <span class="position-realive top-0 m-2 badge bg-success rounded-circle">@tag.PostCount</span>
+                        </a>
+                    </li>
+
+                    i++;
+                }
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Blog item Card-->
+@foreach (var item in Model.BrowseBlogsByView)
+{
+    <div class="card mb-3 shadow-sm">
+        <div class="row g-0">
+            <a class="stretched-link" asp-controller="Blog" asp-action="Index" asp-route-Id="@item.Id"></a>
+            <div class="col">
+                <div class="card-body ">
+                    <div class="row">
+                        <div class="col-2">
+                            <p class="card-text m-0"> Views: @Html.DisplayFor(modelItem => item.PostViews)</p>
+                            <div class="">
+                                <img src="@Html.DisplayFor(modelItem => item.FeaturedImage)" width="100" class="img-fluid img-thumbnail rounded-start" onerror="this.onerror=null; this.src='/img/kappa_img.svg'">
+                            </div>
+                        </div>
+                        <div class="col text-truncate">
+                            <h5 class="card-title">@Html.DisplayFor(modelItem => item.Title)</h5>
+                            <i>By @item.AuthorName</i>
+                        </div>
+                        <div class="col-xl-3 text-end">
+                            <h6 class="card-subtitle mb-1 text-muted">@String.Format("{0:yyyy/MM/dd}",item.TimeStamp)</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+

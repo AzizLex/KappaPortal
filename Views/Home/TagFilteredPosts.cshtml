@@ -1,0 +1,18 @@
+﻿@model IEnumerable<KappaPortal.Models.ViewModels.UserPostVM>
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="AllBlogs">All blogs</a></li>
+        <li class="breadcrumb-item active" aria-current="page">#@ViewBag.tagName</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-10">
+        @foreach (var item in Model)
+        {
+            <partial name="_PostPartial" model=@item />
+        }
+    </div>
+</div>

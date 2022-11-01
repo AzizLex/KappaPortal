@@ -1,0 +1,43 @@
+﻿@page
+@model LoginModel
+@{
+    ViewData["Title"] = "Log in";
+}
+
+<div class="container-fluid p-0">
+    <div class="row my-3 mx-5 mt-5">
+        <div class="col text-center d-none d-md-block pt-5">
+            <img src="/img/kappa_logo.svg" style="width: 200px;">
+            <h1 class="text-primary" style="font-size: 4rem;">Kappa</h1>
+        </div>
+        <div class="col-12 col-md-7 col-xl-5 pt-5">
+            <div class="card" style="max-width: 30rem;">
+                <div class="card-body">
+                    <form id="account" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <input class="form-control my-3 shadow-sm" asp-for="Input.Email" placeholder="E-mail" class="form-control" autocomplete="username" aria-required="true" />
+                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+
+                        <input class="form-control my-3 shadow-sm" asp-for="Input.Password" placeholder="Password" class="form-control" autocomplete="current-password" aria-required="true" />
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+
+                        <button class="btn btn-primary col-12 fs-5 fw-bold" id="login-submit" type="submit">Log In</button>
+
+                        <div class="text-center my-3">
+                            <a class="text-decoration-none" id="forgot-password" asp-page="./ForgotPassword">Forgotten password?</a>
+                        </div>
+                        <hr>
+                        <div class="text-center">
+                            <a class="btn btn-success px-4 fw-bold" asp-area="Identity" asp-page="/Account/Register" >Create New Account</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<partial name="_ValidationScriptsPartial" />
+}

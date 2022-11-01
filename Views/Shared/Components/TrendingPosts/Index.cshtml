@@ -1,0 +1,30 @@
+﻿@model IEnumerable<KappaPortal.Models.Post>
+
+<h2 class="font-weight-light pb-2">Trending posts</h2>
+<div class="row d-flex flex-row flex-nowrap mb-4" style="overflow: auto;">
+  
+        @foreach (var item in Model)
+        {
+            <div class="col-12 col-sm-6 col-md-4">
+                <div class="card h-100">
+                    <a asp-controller="Blog" asp-action="Post" asp-route-Id="@item.Id">
+                        <div class="ratio ratio-16x9">
+                            <img src='@item.FeaturedImage??"/img/kappa_img.svg"' class="card-img-top" alt="@item.Title" style="object-fit:cover;" onerror="this.onerror=null; this.src='/img/kappa_img.svg'" />
+                        </div>
+                    </a>
+
+                    <div class="card-body pt-1 d-flex flex-column">
+                        
+                        <a class="text-decoration-none text-black" asp-controller="Blog" asp-action="Post" asp-route-Id="@item.Id">
+                            <p class="text-start card-text fs-5 text-truncated">@item.Title</p>
+                        </a>
+                        <p class="text-start text-uppercase text-muted mt-auto mb-0 small">
+                            @String.Format("{0:yyyy/MM/dd}",item.TimeStamp)
+                            
+                        </p>
+                    </div>
+                </div>
+            </div>
+        }
+
+</div>

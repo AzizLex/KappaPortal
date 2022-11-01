@@ -1,0 +1,47 @@
+﻿@model Tuple<IEnumerable<KappaPortal.Models.ViewModels.UserPostVM>, IEnumerable<KappaPortal.Models.ViewModels.UserBlogVM>>
+
+@{
+    ViewData["Title"] = "SearchResults";
+}
+<div class="row">
+    <div class="col-10">
+        @foreach (var item in Model.Item1)
+        {
+            <partial name="_PostPartial" model=@item />
+        }
+    </div>
+</div>
+
+<div class="row">
+<!-- Blog item Card-->
+@foreach (var item in Model.Item2)
+{
+      <div class="card mb-3 shadow-sm">
+        <div class="row g-0">
+            <a class="stretched-link" asp-controller="Blog" asp-action="Index" asp-route-Id="@item.Id"></a>
+            <div class="col">
+                <div class="card-body ">
+                    <div class="row">
+                         <div class="col-2">
+                            <p class="card-text m-0"> Views: @Html.DisplayFor(modelItem => item.PostViews)</p>
+                            <div class="">
+                              <img src="@Html.DisplayFor(modelItem => item.FeaturedImage)" width="100" class="img-fluid img-thumbnail rounded-start" onerror="this.onerror=null; this.src='/img/kappa_img.svg'">
+
+                            </div>
+                        </div>
+                         <div class="col text-truncate">
+                            <h5 class="card-title">@Html.DisplayFor(modelItem => item.Title)</h5>
+                            <i>By @item.AuthorName</i>
+                         </div>
+
+                        <div class="col-xl-3 text-end"> 
+
+                            <h6 class="card-subtitle mb-1 text-muted">@String.Format("{0:yyyy/MM/dd}",item.TimeStamp)</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+</div>

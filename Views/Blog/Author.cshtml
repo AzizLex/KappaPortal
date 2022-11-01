@@ -1,0 +1,30 @@
+﻿@model IEnumerable<KappaPortal.Models.ViewModels.UserPostVM>
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+        <li class="breadcrumb-item active"  aria-current="page">@ViewBag.authorName</li>
+    </ol>
+</nav>
+
+<div class="row">
+    @{
+        if (Model.Any())
+        {
+            <div class="col">
+                @foreach (var item in Model)
+                {
+                    <partial name="_PostPartial" model=@item />
+                }
+            </div>
+
+        }
+        else
+        {
+            <div class="card mb-3 shadow-sm">
+                <h4 class="text-center py-5 text-muted">@ViewBag.authorName has no post yet.</h4>
+            </div>
+        }
+    }
+</div>
+

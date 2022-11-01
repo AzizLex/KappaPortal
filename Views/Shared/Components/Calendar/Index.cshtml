@@ -1,0 +1,34 @@
+﻿@using System.Globalization
+@model IEnumerable<KappaPortal.Models.ViewModels.CalendarVM>
+
+<div class="accordion accordion-flush" id="accordionCalendar" style="position: -webkit-sticky; position: sticky; top: 0;">
+
+    @{
+        var show = "show";
+        var collapsed = "";
+        foreach (var itemY in Model)
+        {
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading_@itemY.Year">
+                    <button class=" fw-bold accordion-button @collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_@itemY.Year" aria-expanded="true" aria-controls="collapse_@itemY.Year" onclick="event.stopPropagation();">
+                        @itemY.Year
+                    </button>
+                </h2>
+
+                <div id="collapse_@itemY.Year" class="accordion-collapse collapse @show" aria-labelledby="heading_@itemY.Year" data-bs-parent="#accordionCalendar">
+
+                    <div class="accordion-body">
+                        <ul class="list-group list-group-flush">
+                            @foreach (var itemM in itemY.Months)
+                            {
+                                <li class="list-group-item"><a asp-controller="Blog" asp-action="CalendarPosts" asp-route-Id="@ViewBag.BlogId" asp-route-yId="@itemY.Year" asp-route-mId="@itemM">@CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(itemM)</a></li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            show = "";
+            collapsed = "collapsed";
+        }
+    }
+</div>

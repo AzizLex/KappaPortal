@@ -1,0 +1,40 @@
+﻿@model  IEnumerable<TagListVM>
+@{
+    string[] tagcolors =     { "#00539CFF", "#101820FF", "#F96167", "#CCF381", "#E2D1F9", "#FCF6F5FF", "#FF69B4", "#234E70", "#B85042", "yellow"};
+    string[] tagTextcolors = { "#EEA47FFF", "#FEE715FF", "#FCE77D", "#4831D4", "#317773", "#990011FF", "#00FFFF", "#FBF8BE", "black", "black"};
+    int b = 9;    
+}
+@{
+    int i = 0;
+}
+<ul class="tag">    
+    @foreach (var tag in Model)
+    {         
+        int result = i % b;
+        string tagcolor = tagcolors[result];
+        string tagTextcolor = tagTextcolors[result];
+
+        @*<a href="www.googleAsTestLink.com" >*@
+        <a asp-controller="MyPostController" asp-action="www.google.com" style="text-decoration: none">
+            <li class="btn m-2 p-2" button type="button"  style=" background-color:@tagcolor; color:@tagTextcolor">
+                <span >
+                    <span>@tag.Name</span>
+                   
+
+@*                    old code, working:
+                    <span>@tag.PostCount</span>
+*@
+
+
+
+@*Testing new solution for badge:*@
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">99</span>
+
+
+            
+                </span>
+            </li button>
+        </a>             
+        i++;          
+    }   
+</ul>
